@@ -2,6 +2,7 @@ package its.raining.battlearena.client;
 
 import its.raining.battlearena.exception.ClientException;
 import its.raining.battlearena.generated.BattlearenaIo_TestWs;
+import its.raining.battlearena.generated.BattlearenaIo_TestWs.Root;
 import its.raining.battlearena.model.Coords;
 import its.raining.battlearena.model.Level;
 import its.raining.battlearena.model.Plateau;
@@ -22,30 +23,30 @@ public class BattlearenaClient {
     MAPPER.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
   }
 
+  Root client = BattlearenaIo_TestWs.root();
+
   /**
    * @return pong, si le serveur répond
    */
   public String ping() {
-    return BattlearenaIo_TestWs.root().ping().getAsTextPlain(String.class);
+    return client.ping().getAsTextPlain(String.class);
   }
 
   public String getIdEquipe(String nomEquipe, String motDePasse) {
-    return BattlearenaIo_TestWs.root().playerGetIdEquipeNomEquipeMotDePasse(nomEquipe, motDePasse)
-        .getAsTextPlain(String.class);
+    return client.playerGetIdEquipeNomEquipeMotDePasse(nomEquipe, motDePasse).getAsTextPlain(
+        String.class);
   }
 
   public String newPractice(String idEquipe, Level level) {
-    return BattlearenaIo_TestWs.root().practiceNewLevelIdEquipe(level.getCode(), idEquipe)
-        .getAsTextPlain(String.class);
+    return client.practiceNewLevelIdEquipe(level.getCode(), idEquipe).getAsTextPlain(String.class);
   }
 
   public String getStatus(String idEquipe, String idPartie) {
-    return BattlearenaIo_TestWs.root().gameStatusIdPartieIdEquipe(idPartie, idEquipe)
-        .getAsTextPlain(String.class);
+    return client.gameStatusIdPartieIdEquipe(idPartie, idEquipe).getAsTextPlain(String.class);
   }
 
   public Plateau getBoard(String idPartie) {
-    String result = BattlearenaIo_TestWs.root().gameBoardIdPartie(idPartie).getAs(String.class);
+    String result = client.gameBoardIdPartie(idPartie).getAs(String.class);
 
     try {
       return MAPPER.readValue(result, Plateau.class);
@@ -55,8 +56,7 @@ public class BattlearenaClient {
   }
 
   public String play(String idEquipe, String idPartie, Coords coords) {
-    return BattlearenaIo_TestWs.root()
-        .gamePlayIdPartieIdEquipeCoordXCoordY(idPartie, idEquipe, coords.x, coords.y)
+    return client.gamePlayIdPartieIdEquipeCoordXCoordY(idPartie, idEquipe, coords.x, coords.y)
         .getAsTextPlain(String.class);
   }
 }
