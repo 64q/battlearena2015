@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<application xmlns="http://wadl.dev.java.net/2009/02">
+    <doc xmlns:jersey="http://jersey.java.net/" jersey:generatedBy="Jersey: 1.19 02/11/2015 03:25 AM"/>
+    <grammars/>
+    <resources base="http://battlearena.io/test-ws/">
+        <resource path="/">
+            <resource path="/practice/next/{idEquipe}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="idEquipe" style="template" type="xs:string"/>
+                <method id="prochainePartiePractice" name="GET">
+                    <response>
+                        <representation mediaType="text/plain"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/game/status/{idPartie}/{idEquipe}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="idPartie" style="template" type="xs:string"/>
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="idEquipe" style="template" type="xs:string"/>
+                <method id="getStatus" name="GET">
+                    <response>
+                        <representation mediaType="text/plain"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/ping">
+                <method id="ping" name="GET">
+                    <response>
+                        <representation mediaType="text/plain"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/pingError500">
+                <method id="pingError500" name="GET">
+                    <response>
+                        <representation mediaType="application/json"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/pingError403">
+                <method id="pingError403" name="GET">
+                    <response>
+                        <representation mediaType="application/json"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/versus/next/{idEquipe}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="idEquipe" style="template" type="xs:string"/>
+                <method id="prochainePartie" name="GET">
+                    <response>
+                        <representation mediaType="text/plain"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/practice/new/{level}/{idEquipe}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="level" style="template" type="xs:string"/>
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="idEquipe" style="template" type="xs:string"/>
+                <method id="creerPractice" name="GET">
+                    <response>
+                        <representation mediaType="text/plain"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/game/board/{idPartie}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="idPartie" style="template" type="xs:string"/>
+                <method id="getPlateau" name="GET">
+                    <request>
+                        <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="format" style="query" type="xs:string" default="json"/>
+                    </request>
+                    <response>
+                        <representation mediaType="*/*"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/game/play/{idPartie}/{idEquipe}/{coordX}/{coordY}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="idPartie" style="template" type="xs:string"/>
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="coordX" style="template" type="xs:string"/>
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="coordY" style="template" type="xs:string"/>
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="idEquipe" style="template" type="xs:string"/>
+                <method id="jouerPartie" name="GET">
+                    <response>
+                        <representation mediaType="text/plain"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/game/getlastmove/{idPartie}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="idPartie" style="template" type="xs:string"/>
+                <method id="getLastMove" name="GET">
+                    <response>
+                        <representation mediaType="text/plain"/>
+                    </response>
+                </method>
+            </resource>
+            <resource path="/player/getIdEquipe/{nomEquipe}/{motDePasse}">
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="motDePasse" style="template" type="xs:string"/>
+                <param xmlns:xs="http://www.w3.org/2001/XMLSchema" name="nomEquipe" style="template" type="xs:string"/>
+                <method id="getIdEquipe" name="GET">
+                    <response>
+                        <representation mediaType="text/plain"/>
+                    </response>
+                </method>
+            </resource>
+        </resource>
+    </resources>
+</application>
