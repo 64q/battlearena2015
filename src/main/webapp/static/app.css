@@ -1,0 +1,17 @@
+/* app.css */
+
+body {
+  padding: 0;
+  margin: 0;
+}
+
+header {
+  background: silver;
+}
+
+header h1 {
+  padding: 5px 10px 5px 10px;
+  margin: 0;
+}
+
+
