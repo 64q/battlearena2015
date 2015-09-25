@@ -43,10 +43,9 @@ public class CommandLine {
     LOG.info("Lancement du conteneur Battlearena ...");
 
     if (MODE == GameType.TRAINING) {
-      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).run(GameType.TRAINING,
-          NIVEAU);
+      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).run(NIVEAU);
     } else {
-      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).run(GameType.VERSUS);
+      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).run();
     }
 
     context.close();

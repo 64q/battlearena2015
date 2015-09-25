@@ -14,4 +14,50 @@ header h1 {
   margin: 0;
 }
 
+ul {
+  padding: 0;
+  margin: 0;
+  list-style-position: inside;
+}
 
+.item {
+  margin: 10px;
+  
+  vertical-align: top;
+  min-height: 300px;
+  
+  display: inline-block;
+}
+
+.item h2 {
+  padding: 0 0 5px 0;
+  margin: 0 0 5px 0;
+  
+  border-bottom: 1px solid black;
+}
+
+.item div {
+  padding: 3px 0 3px 0;
+}
+
+.mission-control {
+  width: 400px;
+}
+
+.logger {
+  width: 800px;
+}
+
+.logger div {
+  max-height: 700px;
+  overflow: auto;
+}
+
+.logger p {
+  padding: 0;
+  margin: 0;
+}
+
+.game-actions {
+  width: 600px;
+}

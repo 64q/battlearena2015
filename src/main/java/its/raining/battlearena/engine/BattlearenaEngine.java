@@ -10,7 +10,7 @@ import org.springframework.util.Assert;
 import its.raining.battlearena.client.BattlearenaClient;
 import its.raining.battlearena.exception.EngineException;
 import its.raining.battlearena.model.Coords;
-import its.raining.battlearena.model.GameType;
+import its.raining.battlearena.model.EngineVars;
 import its.raining.battlearena.model.Level;
 import its.raining.battlearena.model.Plateau;
 
@@ -20,9 +20,17 @@ import its.raining.battlearena.model.Plateau;
  * <p>
  * <b>Exemple d'utilisation</b>
  * </p>
- * 
+ * <p>
+ * Pour le versus
+ * </p>
  * <code>
- * engine.init("test", "test").run(GameType.VERSUS);
+ * engine.init("test", "test").run();
+ * </code>
+ * <p>
+ * Pour le training
+ * </p>
+ * <code>
+ * engine.init("test", "test").run(Level.EASY);
  * </code>
  */
 @Component
@@ -47,6 +55,9 @@ public class BattlearenaEngine {
   /** Id de la partie */
   private String idPartie;
 
+  /** Id de l'adversaire */
+  private String idAdversaire;
+
   /**
    * Initialise le moteur avec le nom de l'équipe et le mot de passe
    * 
@@ -58,36 +69,32 @@ public class BattlearenaEngine {
     this.nomEquipe = nomEquipe;
     this.motDePasse = motDePasse;
 
+    // préparation du moteur
+    setup(this.nomEquipe, this.motDePasse);
+
     return this;
   }
 
   /**
-   * Démarre une nouvelle partie
+   * Démarre une nouvelle partie versus
    * 
    * @param type
    */
-  public void run(GameType type) {
-    run(type, null);
+  public void run() {
+    run(null);
   }
 
   /**
-   * Démarre une partie
+   * Démarre une partie training si level n'est pas nul
    * 
-   * @param type
    * @param level
-   * @return le moteur de jeu
    */
-  public void run(GameType type, Level level) {
-    Assert.notNull(type);
+  public void run(Level level) {
 
-    // préparation du moteur
-    setup(nomEquipe, motDePasse);
-
-    // lancement de la partie
-    if (type == GameType.TRAINING) {
-      runPractice(level);
-    } else {
+    if (null == level) {
       runVersus();
+    } else {
+      runPractice(level);
     }
 
     LOG.info("Fin de l'exécution du run");
@@ -111,15 +118,23 @@ public class BattlearenaEngine {
   /**
    * Initialise le prochain match
    */
-  private void nextVersus() {
+  protected void nextVersus() {
     String id = client.nextVersus(idEquipe);
 
-    if (StringUtils.isEmpty(id) || "NA".equals(id)) {
+    // Cas non géré, on arrête tout
+    if (StringUtils.isEmpty(id)) {
       throw new EngineException(
           "L'identifiant du prochain match n'est pas exploitable, arrêt du moteur");
     }
 
+    // On attend d'avoir une partie
+    if ("NA".equals(id)) {
+      nextVersus();
+    }
+
     idPartie = id;
+    // TODO doit être implémenté
+    idAdversaire = "tobeimplemented";
 
     LOG.info("Prochain match d'id = " + idPartie);
   }
@@ -141,7 +156,7 @@ public class BattlearenaEngine {
    * Joue un coup dans la partie, méthode récursive s'exécutant tant que la partie n'est pas
    * terminée
    */
-  private void play() {
+  protected void play() {
     String status = client.getStatus(idEquipe, idPartie);
 
     switch (status) {
@@ -168,7 +183,7 @@ public class BattlearenaEngine {
   /**
    * Action d'annulation de la partie
    */
-  private void performCancel() {
+  protected void performCancel() {
     // TODO Auto-generated method stub
     LOG.info("Annulé");
   }
@@ -176,7 +191,7 @@ public class BattlearenaEngine {
   /**
    * Action de défaite
    */
-  private void performDefeat() {
+  protected void performDefeat() {
     // TODO Auto-generated method stub
     LOG.info("Défaite");
   }
@@ -184,7 +199,7 @@ public class BattlearenaEngine {
   /**
    * Action de victoire
    */
-  private void performWin() {
+  protected void performWin() {
     // TODO Auto-generated method stub
     LOG.info("Victoire");
   }
@@ -192,20 +207,23 @@ public class BattlearenaEngine {
   /**
    * Joue le tour
    */
-  private void performTurn() {
+  protected void performTurn() {
     LOG.info("Tour de jeu");
 
     // récupérer le plateau
     Plateau plateau = client.getBoard(idEquipe);
 
-    LOG.info("Etat joueur1 " + plateau.getPlayer1().getNom() + " = { nbrDePieces = "
-        + plateau.getPlayer1().getNbrDePieces() + " } ");
-    LOG.info("Etat joueur2 " + plateau.getPlayer2().getNom() + " = { nbrDePieces = "
-        + plateau.getPlayer2().getNbrDePieces() + " } ");
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("Etat joueur1 " + plateau.getPlayer1().getNom() + " = { nbrDePieces = "
+          + plateau.getPlayer1().getNbrDePieces() + " } ");
+      LOG.debug("Etat joueur2 " + plateau.getPlayer2().getNom() + " = { nbrDePieces = "
+          + plateau.getPlayer2().getNbrDePieces() + " } ");
+    }
 
     // jouer le coup
     Coords coords = new Coords("1", "1");
 
+    // définition de la prochaine action à effectuer en fonction du résultat du coup
     String result = client.play(idEquipe, idPartie, coords);
 
     switch (result) {
@@ -225,8 +243,14 @@ public class BattlearenaEngine {
 
     String id = client.newPractice(idEquipe, level);
 
-    if (StringUtils.isEmpty(id) || "NA".equals(id)) {
+    // Cas non géré, on arrête tout
+    if (StringUtils.isEmpty(id)) {
       throw new EngineException("La partie n'a pas pu être initialisée, arrêt du moteur");
+    }
+
+    // On attend d'avoir une partie
+    if ("NA".equals(id)) {
+      newPractice(level);
     }
 
     idPartie = id;
@@ -251,7 +275,7 @@ public class BattlearenaEngine {
    * @param nomEquipe
    * @param motDePasse
    */
-  private void setup(String nomEquipe, String motDePasse) {
+  protected void setup(String nomEquipe, String motDePasse) {
     Assert.notNull(nomEquipe);
     Assert.notNull(motDePasse);
 
@@ -268,5 +292,28 @@ public class BattlearenaEngine {
 
     // enregistrement dans le moteur
     this.idEquipe = id;
+  }
+
+  /**
+   * Récupère les variables intéressantes du moteur pour les redistribuer
+   * 
+   * @return variables du moteur
+   */
+  public EngineVars getVars() {
+    EngineVars vars = new EngineVars();
+
+    vars.setIdEquipe(idEquipe);
+    vars.setIdPartie(idPartie);
+
+    if (null != idEquipe && null != idPartie) {
+      // ajout du statut uniquement si on est en partie
+      vars.setStatus(client.getStatus(idEquipe, idPartie));
+    }
+
+    if (null != idAdversaire) {
+      vars.setIdAdversaire(idAdversaire);
+    }
+
+    return vars;
   }
 }

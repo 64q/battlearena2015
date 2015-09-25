@@ -1,13 +1,20 @@
 package its.raining.battlearena.model;
 
-
+/**
+ * Plateau de jeu
+ */
 public class Plateau {
+
+  /** Joueur 1 */
   private Joueur player1;
 
+  /** Joueur 2 */
   private Joueur player2;
 
+  /** Longueur plateau */
   private int longueur;
 
+  /** Largeur plateau */
   private int largeur;
 
   public Joueur getPlayer1() {
@@ -41,6 +48,5 @@ public class Plateau {
   public void setLargeur(int largeur) {
     this.largeur = largeur;
   }
-
 
 }
