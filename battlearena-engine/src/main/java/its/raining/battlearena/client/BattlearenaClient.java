@@ -30,7 +30,7 @@ public class BattlearenaClient {
   /** Mapper utilisé pour le {@link Plateau} de jeu */
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
-  /** Client Jersey */
+  /** Client Jersey, a faire pointer vers le vers WS lors de la compétition */
   protected Root client = BattlearenaIo_TestWs.root();
 
   static {
