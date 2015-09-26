@@ -6,7 +6,7 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 import its.raining.battlearena.engine.BattlearenaEngine;
-import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.engine.model.Niveau;
 import its.raining.battlearena.server.websocket.message.TrainingMessage;
 import its.raining.battlearena.server.websocket.message.VersusMessage;
 
@@ -24,7 +24,7 @@ public class AsyncRunner {
    */
   @Async
   public void run(TrainingMessage trainingMessage) {
-    engine.run(Level.valueOf(trainingMessage.getLevel().toUpperCase()));
+    engine.runPractice(Niveau.valueOf(trainingMessage.getLevel().toUpperCase()));
   }
 
   /**
@@ -33,6 +33,6 @@ public class AsyncRunner {
    * @param versusMessage
    */
   public void run(VersusMessage versusMessage) {
-    engine.run();
+    engine.runVersus();
   }
 }

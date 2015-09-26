@@ -6,9 +6,12 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import its.raining.battlearena.engine.BattlearenaEngine;
-import its.raining.battlearena.engine.model.GameType;
-import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.engine.model.Mode;
+import its.raining.battlearena.engine.model.Niveau;
 
+/**
+ * Point d'entrée en ligne de commande du moteur de jeu
+ */
 public class CommandLine {
 
   // Constantes à configurer
@@ -20,10 +23,10 @@ public class CommandLine {
   public static final String MOT_DE_PASSE = "test";
 
   /** Mode de jeu */
-  public static final GameType MODE = GameType.TRAINING;
+  public static final Mode MODE = Mode.PRACTICE;
 
   /** Niveau IA */
-  public static final Level NIVEAU = Level.MEDIUM;
+  public static final Niveau NIVEAU = Niveau.MEDIUM;
 
   // -----------------------
 
@@ -40,16 +43,25 @@ public class CommandLine {
    * @param args
    */
   public static void main(String[] args) {
+    LOG.info("======================================");
     LOG.info("Lancement du conteneur Battlearena ...");
+    LOG.info("======================================");
+    LOG.info("Paramètres de la partie :");
+    LOG.info(" - Nom équipe = {}", NOM_EQUIPE);
+    LOG.info(" - Mode       = {}", MODE);
+    LOG.info(" - Niveau IA  = {}", NIVEAU);
+    LOG.info("======================================");
 
-    if (MODE == GameType.TRAINING) {
-      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).run(NIVEAU);
+    if (MODE == Mode.PRACTICE) {
+      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).runPractice(NIVEAU);
     } else {
-      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).run();
+      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).runVersus();
     }
 
     context.close();
 
-    LOG.info("Fin de l'exécution de la Battlearena ...");
+    LOG.info("===============================================");
+    LOG.info("Fin de l'exécution du conteneur Battlearena ...");
+    LOG.info("===============================================");
   }
 }

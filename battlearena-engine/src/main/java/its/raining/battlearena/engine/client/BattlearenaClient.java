@@ -2,14 +2,15 @@ package its.raining.battlearena.engine.client;
 
 import java.io.IOException;
 
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import its.raining.battlearena.engine.exception.ClientException;
-import its.raining.battlearena.engine.model.Coords;
-import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.engine.model.Coordonnees;
+import its.raining.battlearena.engine.model.Niveau;
 import its.raining.battlearena.engine.model.Plateau;
 import its.raining.battlearena.generated.BattlearenaIo_TestWs;
 import its.raining.battlearena.generated.BattlearenaIo_TestWs.Root;
@@ -21,8 +22,6 @@ import its.raining.battlearena.generated.BattlearenaIo_TestWs.Root;
  * <b>NB :</b> Penser à changer le client de {@link BattlearenaIo_TestWs} en non test lors de la
  * compétition
  * </p>
- * 
- * @author Quentin
  */
 @Service
 public class BattlearenaClient {
@@ -65,8 +64,18 @@ public class BattlearenaClient {
    * @param level
    * @return l'id du match
    */
-  public String newPractice(String idEquipe, Level level) {
+  public String newPractice(String idEquipe, Niveau level) {
     return client.practiceNewLevelIdEquipe(level.getCode(), idEquipe).getAsTextPlain(String.class);
+  }
+
+  /**
+   * Retourne le prochain match contre une IA
+   * 
+   * @param idEquipe
+   * @return l'id du match
+   */
+  public String nextPractice(String idEquipe) {
+    return client.practiceNextIdEquipe(idEquipe).getAsTextPlain(String.class);
   }
 
   /**
@@ -104,9 +113,27 @@ public class BattlearenaClient {
    * @param coords
    * @return l'état du coup
    */
-  public String play(String idEquipe, String idPartie, Coords coords) {
+  public String play(String idEquipe, String idPartie, Coordonnees coords) {
     return client.gamePlayIdPartieIdEquipeCoordXCoordY(idPartie, idEquipe, coords.x, coords.y)
         .getAsTextPlain(String.class);
+  }
+
+  /**
+   * Récupère le dernier coup joué de l'adversaire
+   * 
+   * @param idPartie
+   * @return coordonées du coup
+   */
+  public Coordonnees getLastMove(String idPartie) {
+    Coordonnees coords = new Coordonnees();
+
+    String[] result = StringUtils
+        .split(client.gameGetlastmoveIdPartie(idPartie).getAsTextPlain(String.class), ",");
+
+    coords.x = result[0];
+    coords.y = result[1];
+
+    return coords;
   }
 
   /**

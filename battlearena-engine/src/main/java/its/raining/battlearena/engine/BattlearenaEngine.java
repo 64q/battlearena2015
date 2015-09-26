@@ -9,9 +9,10 @@ import org.springframework.util.Assert;
 
 import its.raining.battlearena.engine.client.BattlearenaClient;
 import its.raining.battlearena.engine.exception.EngineException;
-import its.raining.battlearena.engine.model.Coords;
+import its.raining.battlearena.engine.model.Coordonnees;
 import its.raining.battlearena.engine.model.EngineVars;
-import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.engine.model.Niveau;
+import its.raining.battlearena.engine.model.Mode;
 import its.raining.battlearena.engine.model.Plateau;
 
 /**
@@ -27,10 +28,10 @@ import its.raining.battlearena.engine.model.Plateau;
  * engine.init("test", "test").run();
  * </code>
  * <p>
- * Pour le training
+ * Pour le practice
  * </p>
  * <code>
- * engine.init("test", "test").run(Level.EASY);
+ * engine.init("test", "test").run(Niveau.EASY);
  * </code>
  */
 @Component
@@ -58,6 +59,12 @@ public class BattlearenaEngine {
   /** Id de l'adversaire */
   private String idAdversaire;
 
+  /** Mode de jeu */
+  private Mode mode;
+
+  /** Niveau de l'IA */
+  private Niveau level;
+
   /**
    * Initialise le moteur avec le nom de l'équipe et le mot de passe
    * 
@@ -76,31 +83,6 @@ public class BattlearenaEngine {
   }
 
   /**
-   * Démarre une nouvelle partie versus
-   * 
-   * @param type
-   */
-  public void run() {
-    run(null);
-  }
-
-  /**
-   * Démarre une partie training si level n'est pas nul
-   * 
-   * @param level
-   */
-  public void run(Level level) {
-
-    if (null == level) {
-      runVersus();
-    } else {
-      runPractice(level);
-    }
-
-    LOG.info("Fin de l'exécution du run");
-  }
-
-  /**
    * Démarre un match contre une autre équipe
    * 
    * <p>
@@ -108,11 +90,18 @@ public class BattlearenaEngine {
    * </p>
    */
   public void runVersus() {
+    LOG.info("Début de l'exécution des versus");
+
+    // enregistrement du mode de jeu
+    this.mode = Mode.VERSUS;
+
     // récupération du prochain match à jouer
     nextVersus();
 
     // démarrage de la partie
     play();
+
+    LOG.info("Fin de l'exécution des versus");
   }
 
   /**
@@ -133,7 +122,7 @@ public class BattlearenaEngine {
     }
 
     idPartie = id;
-    // TODO doit être implémenté
+    // TODO doit être implémenté, comment le récupère-t-on ?
     idAdversaire = "tobeimplemented";
 
     LOG.info("Prochain match d'id = " + idPartie);
@@ -144,12 +133,21 @@ public class BattlearenaEngine {
    * 
    * @param level niveau du match contre l'IA
    */
-  public void runPractice(Level level) {
+  public void runPractice(Niveau level) {
+    LOG.info("Début de l'exécution du practice");
+
+    // enregistrement du mode de jeu
+    this.mode = Mode.PRACTICE;
+    // enregistrement du niveau de l'IA sélectionné
+    this.level = level;
+
     // passage en practice
     newPractice(level);
 
     // démarrage de la partie
     play();
+
+    LOG.info("Fin de l'exécution du practice");
   }
 
   /**
@@ -184,24 +182,33 @@ public class BattlearenaEngine {
    * Action d'annulation de la partie
    */
   protected void performCancel() {
-    // TODO Auto-generated method stub
-    LOG.info("Annulé");
+    LOG.info("Match contre l'IA annulé, arrêt du moteur");
   }
 
   /**
    * Action de défaite
    */
   protected void performDefeat() {
-    // TODO Auto-generated method stub
-    LOG.info("Défaite");
+    LOG.info("Défaite du match " + idPartie + " contre " + idAdversaire);
+
+    if (mode == Mode.PRACTICE) {
+      runPractice(level);
+    } else {
+      runVersus();
+    }
   }
 
   /**
    * Action de victoire
    */
   protected void performWin() {
-    // TODO Auto-generated method stub
-    LOG.info("Victoire");
+    LOG.info("Victoire du match " + idPartie + " contre " + idAdversaire);
+
+    if (mode == Mode.PRACTICE) {
+      runPractice(level);
+    } else {
+      runVersus();
+    }
   }
 
   /**
@@ -221,7 +228,7 @@ public class BattlearenaEngine {
     }
 
     // jouer le coup
-    Coords coords = new Coords("1", "1");
+    Coordonnees coords = new Coordonnees("1", "1");
 
     // définition de la prochaine action à effectuer en fonction du résultat du coup
     String result = client.play(idEquipe, idPartie, coords);
@@ -238,7 +245,7 @@ public class BattlearenaEngine {
     }
   }
 
-  public void newPractice(Level level) {
+  public void newPractice(Niveau level) {
     LOG.info("Initialisation d'une partie en practice de niveau " + level);
 
     String id = client.newPractice(idEquipe, level);
@@ -254,6 +261,7 @@ public class BattlearenaEngine {
     }
 
     idPartie = id;
+    idAdversaire = "IA Battlearena";
 
     LOG.info("Identifiant de la partie = " + idPartie);
   }
@@ -266,7 +274,7 @@ public class BattlearenaEngine {
       throw new EngineException("Impossible de pinger le serveur de jeu, arrêt du moteur");
     }
 
-    LOG.info("Test de connectivité avec le serveur OK");
+    LOG.info("Test de connectivité avec le serveur ... OK");
   }
 
   /**

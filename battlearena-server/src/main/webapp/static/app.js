@@ -1,5 +1,5 @@
 (function() {
-  var socket = new WebSocket("ws://localhost:8080/battlearena/ws");
+  var socket = new WebSocket("ws://localhost:8080/battlearena-server/ws");
 
   var State = {
     idEquipe: null,

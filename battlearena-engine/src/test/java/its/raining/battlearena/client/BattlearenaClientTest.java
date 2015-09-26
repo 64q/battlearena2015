@@ -10,8 +10,12 @@ import its.raining.battlearena.engine.client.BattlearenaClient;
  */
 public class BattlearenaClientTest {
 
+  /** Client à tester */
   private final BattlearenaClient client = new BattlearenaClient();
 
+  /**
+   * Test passant du ping
+   */
   @Test
   public void testPing() {
     Assert.assertEquals("pong", client.ping());
