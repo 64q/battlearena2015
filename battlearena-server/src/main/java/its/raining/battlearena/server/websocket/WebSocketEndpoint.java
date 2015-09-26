@@ -1,4 +1,4 @@
-package its.raining.battlearena.websocket;
+package its.raining.battlearena.server.websocket;
 
 import java.io.IOException;
 
@@ -17,17 +17,17 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.server.standard.SpringConfigurator;
 
 import its.raining.battlearena.engine.BattlearenaEngine;
-import its.raining.battlearena.exception.EngineException;
-import its.raining.battlearena.model.EngineVars;
-import its.raining.battlearena.websocket.message.ConnecterMessage;
-import its.raining.battlearena.websocket.message.Message;
-import its.raining.battlearena.websocket.message.TrainingMessage;
-import its.raining.battlearena.websocket.message.VersusMessage;
-import its.raining.battlearena.websocket.response.ConnecterResponse;
-import its.raining.battlearena.websocket.response.ErrorResponse;
-import its.raining.battlearena.websocket.response.Response;
-import its.raining.battlearena.websocket.response.TrainingResponse;
-import its.raining.battlearena.websocket.response.VersusResponse;
+import its.raining.battlearena.engine.exception.EngineException;
+import its.raining.battlearena.engine.model.EngineVars;
+import its.raining.battlearena.server.websocket.message.ConnecterMessage;
+import its.raining.battlearena.server.websocket.message.Message;
+import its.raining.battlearena.server.websocket.message.TrainingMessage;
+import its.raining.battlearena.server.websocket.message.VersusMessage;
+import its.raining.battlearena.server.websocket.response.ConnecterResponse;
+import its.raining.battlearena.server.websocket.response.ErrorResponse;
+import its.raining.battlearena.server.websocket.response.Response;
+import its.raining.battlearena.server.websocket.response.TrainingResponse;
+import its.raining.battlearena.server.websocket.response.VersusResponse;
 
 @Component
 @ServerEndpoint(value = "/ws", encoders = {ResponseTextEncoder.class},

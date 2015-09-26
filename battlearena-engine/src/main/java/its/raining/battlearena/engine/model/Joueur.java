@@ -1,4 +1,4 @@
-package its.raining.battlearena.model;
+package its.raining.battlearena.engine.model;
 
 public class Joueur {
 

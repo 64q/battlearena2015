@@ -1,4 +1,4 @@
-package its.raining.battlearena.websocket;
+package its.raining.battlearena.server.websocket;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -6,9 +6,9 @@ import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
 import its.raining.battlearena.engine.BattlearenaEngine;
-import its.raining.battlearena.model.Level;
-import its.raining.battlearena.websocket.message.TrainingMessage;
-import its.raining.battlearena.websocket.message.VersusMessage;
+import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.server.websocket.message.TrainingMessage;
+import its.raining.battlearena.server.websocket.message.VersusMessage;
 
 @Component
 @EnableAsync

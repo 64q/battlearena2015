@@ -1,4 +1,4 @@
-package its.raining.battlearena.exception;
+package its.raining.battlearena.engine.exception;
 
 public class EngineException extends RuntimeException {
 

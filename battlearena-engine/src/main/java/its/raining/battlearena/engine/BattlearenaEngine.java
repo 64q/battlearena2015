@@ -7,18 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import its.raining.battlearena.client.BattlearenaClient;
-import its.raining.battlearena.exception.EngineException;
-import its.raining.battlearena.model.Coords;
-import its.raining.battlearena.model.EngineVars;
-import its.raining.battlearena.model.Level;
-import its.raining.battlearena.model.Plateau;
+import its.raining.battlearena.engine.client.BattlearenaClient;
+import its.raining.battlearena.engine.exception.EngineException;
+import its.raining.battlearena.engine.model.Coords;
+import its.raining.battlearena.engine.model.EngineVars;
+import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.engine.model.Plateau;
 
 /**
  * Moteur de jeu de la Battlearena
  * 
  * <p>
- * <b>Exemple d'utilisation</b>
+ * <b>Exemples d'utilisation</b>
  * </p>
  * <p>
  * Pour le versus

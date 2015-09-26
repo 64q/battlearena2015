@@ -1,4 +1,4 @@
-package its.raining.battlearena.commandline;
+package its.raining.battlearena.engine.commandline;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -6,8 +6,8 @@ import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import its.raining.battlearena.engine.BattlearenaEngine;
-import its.raining.battlearena.model.GameType;
-import its.raining.battlearena.model.Level;
+import its.raining.battlearena.engine.model.GameType;
+import its.raining.battlearena.engine.model.Level;
 
 public class CommandLine {
 

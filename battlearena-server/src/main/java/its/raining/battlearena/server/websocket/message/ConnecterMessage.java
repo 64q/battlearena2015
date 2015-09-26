@@ -1,4 +1,4 @@
-package its.raining.battlearena.websocket.message;
+package its.raining.battlearena.server.websocket.message;
 
 public class ConnecterMessage extends Message {
   private String nomEquipe;

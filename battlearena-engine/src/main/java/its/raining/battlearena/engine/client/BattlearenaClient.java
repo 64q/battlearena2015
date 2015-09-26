@@ -1,4 +1,4 @@
-package its.raining.battlearena.client;
+package its.raining.battlearena.engine.client;
 
 import java.io.IOException;
 
@@ -7,12 +7,12 @@ import org.springframework.stereotype.Service;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import its.raining.battlearena.exception.ClientException;
+import its.raining.battlearena.engine.exception.ClientException;
+import its.raining.battlearena.engine.model.Coords;
+import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.engine.model.Plateau;
 import its.raining.battlearena.generated.BattlearenaIo_TestWs;
 import its.raining.battlearena.generated.BattlearenaIo_TestWs.Root;
-import its.raining.battlearena.model.Coords;
-import its.raining.battlearena.model.Level;
-import its.raining.battlearena.model.Plateau;
 
 /**
  * Client Rest Battlearena

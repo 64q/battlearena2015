@@ -1,4 +1,4 @@
-package its.raining.battlearena.websocket.message;
+package its.raining.battlearena.server.websocket.message;
 
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
 

@@ -1,4 +1,4 @@
-package its.raining.battlearena.websocket.response;
+package its.raining.battlearena.server.websocket.response;
 
 public class ErrorResponse extends Response {
   private String message;

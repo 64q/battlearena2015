@@ -3,6 +3,8 @@ package its.raining.battlearena.client;
 import org.junit.Assert;
 import org.junit.Test;
 
+import its.raining.battlearena.engine.client.BattlearenaClient;
+
 /**
  * Tests d'intégration du client Battlearena
  */

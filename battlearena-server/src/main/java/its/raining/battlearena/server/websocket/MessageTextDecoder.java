@@ -1,4 +1,4 @@
-package its.raining.battlearena.websocket;
+package its.raining.battlearena.server.websocket;
 
 import java.io.IOException;
 
@@ -11,7 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import its.raining.battlearena.websocket.message.Message;
+import its.raining.battlearena.server.websocket.message.Message;
 
 public class MessageTextDecoder implements Decoder.Text<Message> {
   /** Logger */

@@ -1,4 +1,4 @@
-package its.raining.battlearena.websocket;
+package its.raining.battlearena.server.websocket;
 
 import javax.websocket.EncodeException;
 import javax.websocket.Encoder;
@@ -8,7 +8,7 @@ import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import its.raining.battlearena.websocket.response.Response;
+import its.raining.battlearena.server.websocket.response.Response;
 
 public class ResponseTextEncoder implements Encoder.Text<Response> {
 
