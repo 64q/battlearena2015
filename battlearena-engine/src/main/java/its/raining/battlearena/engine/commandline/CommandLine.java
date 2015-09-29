@@ -7,7 +7,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import its.raining.battlearena.engine.BattlearenaEngine;
 import its.raining.battlearena.engine.model.Mode;
-import its.raining.battlearena.engine.model.Niveau;
+import its.raining.battlearena.engine.model.Level;
 
 /**
  * Point d'entrée en ligne de commande du moteur de jeu
@@ -25,8 +25,8 @@ public class CommandLine {
   /** Mode de jeu */
   public static final Mode MODE = Mode.PRACTICE;
 
-  /** Niveau IA */
-  public static final Niveau NIVEAU = Niveau.MEDIUM;
+  /** Level IA */
+  public static final Level LEVEL = Level.MEDIUM;
 
   // -----------------------
 
@@ -49,13 +49,13 @@ public class CommandLine {
     LOG.info("Paramètres de la partie :");
     LOG.info(" - Nom équipe = {}", NOM_EQUIPE);
     LOG.info(" - Mode       = {}", MODE);
-    LOG.info(" - Niveau IA  = {}", NIVEAU);
+    LOG.info(" - Level IA  = {}", LEVEL);
     LOG.info("======================================");
 
     if (MODE == Mode.PRACTICE) {
-      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).runPractice(NIVEAU);
+      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).runFlowPractice(LEVEL);
     } else {
-      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).runVersus();
+      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).runFlowVersus();
     }
 
     context.close();

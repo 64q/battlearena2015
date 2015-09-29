@@ -3,15 +3,17 @@ package its.raining.battlearena.engine.client;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import its.raining.battlearena.engine.exception.ClientException;
-import its.raining.battlearena.engine.model.Coordonnees;
-import its.raining.battlearena.engine.model.Niveau;
-import its.raining.battlearena.engine.model.Plateau;
+import its.raining.battlearena.engine.model.Board;
+import its.raining.battlearena.engine.model.Coordinates;
+import its.raining.battlearena.engine.model.Status;
+import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.engine.model.PlayOutcome;
 import its.raining.battlearena.generated.BattlearenaIo_TestWs;
 import its.raining.battlearena.generated.BattlearenaIo_TestWs.Root;
 
@@ -23,10 +25,10 @@ import its.raining.battlearena.generated.BattlearenaIo_TestWs.Root;
  * compétition
  * </p>
  */
-@Service
+@Component
 public class BattlearenaClient {
 
-  /** Mapper utilisé pour le {@link Plateau} de jeu */
+  /** Mapper utilisé pour le {@link Board} de jeu */
   private static final ObjectMapper MAPPER = new ObjectMapper();
 
   /** Client Jersey, a faire pointer vers le vers WS lors de la compétition */
@@ -64,7 +66,7 @@ public class BattlearenaClient {
    * @param level
    * @return l'id du match
    */
-  public String newPractice(String idEquipe, Niveau level) {
+  public String newPractice(String idEquipe, Level level) {
     return client.practiceNewLevelIdEquipe(level.getCode(), idEquipe).getAsTextPlain(String.class);
   }
 
@@ -85,21 +87,22 @@ public class BattlearenaClient {
    * @param idPartie
    * @return l'état de la partie
    */
-  public String getStatus(String idEquipe, String idPartie) {
-    return client.gameStatusIdPartieIdEquipe(idPartie, idEquipe).getAsTextPlain(String.class);
+  public Status getStatus(String idEquipe, String idPartie) {
+    return Status.valueOf(
+        client.gameStatusIdPartieIdEquipe(idPartie, idEquipe).getAsTextPlain(String.class));
   }
 
   /**
    * Récupère le plateau de jeu courant, converti le flux JSON en objet Java
    * 
    * @param idPartie
-   * @return le {@link Plateau} de jeu
+   * @return le {@link Board} de jeu
    */
-  public Plateau getBoard(String idPartie) {
+  public Board getBoard(String idPartie) {
     String result = client.gameBoardIdPartie(idPartie).getAs(String.class);
 
     try {
-      return MAPPER.readValue(result, Plateau.class);
+      return MAPPER.readValue(result, Board.class);
     } catch (IOException e) {
       throw new ClientException("Erreur au parsing du flux JSON", e);
     }
@@ -113,9 +116,10 @@ public class BattlearenaClient {
    * @param coords
    * @return l'état du coup
    */
-  public String play(String idEquipe, String idPartie, Coordonnees coords) {
-    return client.gamePlayIdPartieIdEquipeCoordXCoordY(idPartie, idEquipe, coords.x, coords.y)
-        .getAsTextPlain(String.class);
+  public PlayOutcome play(String idEquipe, String idPartie, Coordinates coords) {
+    return PlayOutcome
+        .valueOf(client.gamePlayIdPartieIdEquipeCoordXCoordY(idPartie, idEquipe, coords.x, coords.y)
+            .getAsTextPlain(String.class));
   }
 
   /**
@@ -124,8 +128,8 @@ public class BattlearenaClient {
    * @param idPartie
    * @return coordonées du coup
    */
-  public Coordonnees getLastMove(String idPartie) {
-    Coordonnees coords = new Coordonnees();
+  public Coordinates getLastMove(String idPartie) {
+    Coordinates coords = new Coordinates();
 
     String[] result = StringUtils
         .split(client.gameGetlastmoveIdPartie(idPartie).getAsTextPlain(String.class), ",");

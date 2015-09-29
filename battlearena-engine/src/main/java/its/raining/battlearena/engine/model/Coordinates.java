@@ -3,19 +3,19 @@ package its.raining.battlearena.engine.model;
 /**
  * Coordonnées
  */
-public class Coordonnees {
+public class Coordinates {
 
   public String x;
   public String y;
 
-  public Coordonnees(String i, String j) {
+  public Coordinates(String i, String j) {
     super();
 
     x = i;
     y = j;
   }
 
-  public Coordonnees() {
+  public Coordinates() {
     super();
   }
 }

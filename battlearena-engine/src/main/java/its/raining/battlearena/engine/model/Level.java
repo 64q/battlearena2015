@@ -1,11 +1,11 @@
 package its.raining.battlearena.engine.model;
 
-public enum Niveau {
+public enum Level {
   EASY("easy"), MEDIUM("medium"), HARD("hard");
 
   private String code;
 
-  Niveau(String code) {
+  Level(String code) {
     this.code = code;
   }
 

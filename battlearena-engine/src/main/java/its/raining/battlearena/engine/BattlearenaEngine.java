@@ -4,16 +4,20 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
+import its.raining.battlearena.ai.Ai;
 import its.raining.battlearena.engine.client.BattlearenaClient;
 import its.raining.battlearena.engine.exception.EngineException;
-import its.raining.battlearena.engine.model.Coordonnees;
+import its.raining.battlearena.engine.model.Board;
+import its.raining.battlearena.engine.model.Coordinates;
 import its.raining.battlearena.engine.model.EngineVars;
-import its.raining.battlearena.engine.model.Niveau;
+import its.raining.battlearena.engine.model.Status;
+import its.raining.battlearena.engine.model.Level;
 import its.raining.battlearena.engine.model.Mode;
-import its.raining.battlearena.engine.model.Plateau;
+import its.raining.battlearena.engine.model.PlayOutcome;
 
 /**
  * Moteur de jeu de la Battlearena
@@ -25,13 +29,13 @@ import its.raining.battlearena.engine.model.Plateau;
  * Pour le versus
  * </p>
  * <code>
- * engine.init("test", "test").run();
+ * engine.init("test", "test").runFlowVersus();
  * </code>
  * <p>
  * Pour le practice
  * </p>
  * <code>
- * engine.init("test", "test").run(Niveau.EASY);
+ * engine.init("test", "test").runFlowPractice(Level.EASY);
  * </code>
  */
 @Component
@@ -43,6 +47,12 @@ public class BattlearenaEngine {
   /** Client Rest */
   @Autowired
   private BattlearenaClient client;
+
+  @Autowired
+  @Qualifier(value = "basicAi")
+  private Ai ai;
+
+  // -- paramètres du moteur de jeu
 
   /** Nom de l'équipe */
   private String nomEquipe;
@@ -62,8 +72,10 @@ public class BattlearenaEngine {
   /** Mode de jeu */
   private Mode mode;
 
-  /** Niveau de l'IA */
-  private Niveau level;
+  /** Level de l'IA */
+  private Level level;
+
+  // --
 
   /**
    * Initialise le moteur avec le nom de l'équipe et le mot de passe
@@ -77,7 +89,7 @@ public class BattlearenaEngine {
     this.motDePasse = motDePasse;
 
     // préparation du moteur
-    setup(this.nomEquipe, this.motDePasse);
+    stepGetIdEquipe(this.nomEquipe, this.motDePasse);
 
     return this;
   }
@@ -89,17 +101,17 @@ public class BattlearenaEngine {
    * Récupère le prochain match avec l'appel Rest next match
    * </p>
    */
-  public void runVersus() {
+  public void runFlowVersus() {
+    Assert.notNull(idEquipe);
+
     LOG.info("Début de l'exécution des versus");
 
     // enregistrement du mode de jeu
     this.mode = Mode.VERSUS;
-
     // récupération du prochain match à jouer
     nextVersus();
-
     // démarrage de la partie
-    play();
+    stepGetStatus();
 
     LOG.info("Fin de l'exécution des versus");
   }
@@ -133,19 +145,18 @@ public class BattlearenaEngine {
    * 
    * @param level niveau du match contre l'IA
    */
-  public void runPractice(Niveau level) {
+  public void runFlowPractice(Level level) {
+    Assert.notNull(idEquipe);
+
     LOG.info("Début de l'exécution du practice");
 
-    // enregistrement du mode de jeu
+    // enregistrement paramètres de partie
     this.mode = Mode.PRACTICE;
-    // enregistrement du niveau de l'IA sélectionné
     this.level = level;
-
     // passage en practice
     newPractice(level);
-
     // démarrage de la partie
-    play();
+    stepGetStatus();
 
     LOG.info("Fin de l'exécution du practice");
   }
@@ -154,25 +165,26 @@ public class BattlearenaEngine {
    * Joue un coup dans la partie, méthode récursive s'exécutant tant que la partie n'est pas
    * terminée
    */
-  protected void play() {
-    String status = client.getStatus(idEquipe, idPartie);
+  protected void stepGetStatus() {
+    Status status = client.getStatus(idEquipe, idPartie);
 
     switch (status) {
-      case "GAGNE":
-        performWin();
+      case VICTORY:
+        performVictory();
         break;
-      case "PERDU":
+      case DEFEAT:
         performDefeat();
         break;
-      case "ANNULE":
-        // le cas ANNULE ne peut survenir qu'en match contre une IA
-        performCancel();
+      case CANCELLED:
+        performCancelled();
         break;
-      case "OUI":
-        performTurn();
-      case "NON":
+      case CAN_PLAY:
+        LOG.debug("C'est notre tour");
+        stepGetBoard();
+      case CANT_PLAY:
       default:
-        play();
+        LOG.debug("Ce n'est pas notre tour");
+        stepGetStatus();
     }
 
     LOG.info("Fin de la partie " + idPartie + " sur l'état = " + status);
@@ -180,8 +192,12 @@ public class BattlearenaEngine {
 
   /**
    * Action d'annulation de la partie
+   * 
+   * <p>
+   * <b>NB :</b> le status Cancelled ne peut survenir qu'en match contre l'IA
+   * </p>
    */
-  protected void performCancel() {
+  protected void performCancelled() {
     LOG.info("Match contre l'IA annulé, arrêt du moteur");
   }
 
@@ -191,34 +207,26 @@ public class BattlearenaEngine {
   protected void performDefeat() {
     LOG.info("Défaite du match " + idPartie + " contre " + idAdversaire);
 
-    if (mode == Mode.PRACTICE) {
-      runPractice(level);
-    } else {
-      runVersus();
-    }
+    // fin
   }
 
   /**
    * Action de victoire
    */
-  protected void performWin() {
+  protected void performVictory() {
     LOG.info("Victoire du match " + idPartie + " contre " + idAdversaire);
 
-    if (mode == Mode.PRACTICE) {
-      runPractice(level);
-    } else {
-      runVersus();
-    }
+    // fin
   }
 
   /**
    * Joue le tour
    */
-  protected void performTurn() {
+  protected void stepGetBoard() {
     LOG.info("Tour de jeu");
 
     // récupérer le plateau
-    Plateau plateau = client.getBoard(idEquipe);
+    Board plateau = client.getBoard(idEquipe);
 
     if (LOG.isDebugEnabled()) {
       LOG.debug("Etat joueur1 " + plateau.getPlayer1().getNom() + " = { nbrDePieces = "
@@ -227,25 +235,38 @@ public class BattlearenaEngine {
           + plateau.getPlayer2().getNbrDePieces() + " } ");
     }
 
-    // jouer le coup
-    Coordonnees coords = new Coordonnees("1", "1");
+    stepPlay(plateau);
+  }
 
-    // définition de la prochaine action à effectuer en fonction du résultat du coup
-    String result = client.play(idEquipe, idPartie, coords);
+  /**
+   * Etape où jouer un coup
+   * 
+   * @param plateau
+   */
+  protected void stepPlay(Board plateau) {
+
+    // calcul du prochain coup
+    Coordinates coords = ai.play(plateau, idEquipe);
+
+    // joue le coup
+    PlayOutcome result = client.play(idEquipe, idPartie, coords);
 
     switch (result) {
-      case "GAGNE":
-        performWin();
-      case "KO":
+      case KO:
         performDefeat();
-      case "OK":
-      case "PTT":
+      case OK:
+      case NOT_YET:
       default:
-        play();
+        stepGetStatus();
     }
   }
 
-  public void newPractice(Niveau level) {
+  /**
+   * Initialise un match Practice
+   * 
+   * @param level
+   */
+  protected void newPractice(Level level) {
     LOG.info("Initialisation d'une partie en practice de niveau " + level);
 
     String id = client.newPractice(idEquipe, level);
@@ -283,7 +304,7 @@ public class BattlearenaEngine {
    * @param nomEquipe
    * @param motDePasse
    */
-  protected void setup(String nomEquipe, String motDePasse) {
+  protected void stepGetIdEquipe(String nomEquipe, String motDePasse) {
     Assert.notNull(nomEquipe);
     Assert.notNull(motDePasse);
 
@@ -312,6 +333,7 @@ public class BattlearenaEngine {
 
     vars.setIdEquipe(idEquipe);
     vars.setIdPartie(idPartie);
+    vars.setMode(mode);
 
     if (null != idEquipe && null != idPartie) {
       // ajout du statut uniquement si on est en partie
@@ -320,6 +342,10 @@ public class BattlearenaEngine {
 
     if (null != idAdversaire) {
       vars.setIdAdversaire(idAdversaire);
+    }
+
+    if (null != level) {
+      vars.setLevel(level);
     }
 
     return vars;

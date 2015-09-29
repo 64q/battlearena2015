@@ -1,15 +1,15 @@
 package its.raining.battlearena.engine.model;
 
 /**
- * Plateau de jeu
+ * Board de jeu
  */
-public class Plateau {
+public class Board {
 
-  /** Joueur 1 */
-  private Joueur player1;
+  /** Player 1 */
+  private Player player1;
 
-  /** Joueur 2 */
-  private Joueur player2;
+  /** Player 2 */
+  private Player player2;
 
   /** Longueur plateau */
   private int longueur;
@@ -17,19 +17,19 @@ public class Plateau {
   /** Largeur plateau */
   private int largeur;
 
-  public Joueur getPlayer1() {
+  public Player getPlayer1() {
     return this.player1;
   }
 
-  public void setPlayer1(Joueur player1) {
+  public void setPlayer1(Player player1) {
     this.player1 = player1;
   }
 
-  public Joueur getPlayer2() {
+  public Player getPlayer2() {
     return this.player2;
   }
 
-  public void setPlayer2(Joueur player2) {
+  public void setPlayer2(Player player2) {
     this.player2 = player2;
   }
 

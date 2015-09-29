@@ -12,7 +12,29 @@ public class EngineVars {
   private String idAdversaire;
 
   /** Status */
-  private String status;
+  private Status status;
+
+  /** Mode */
+  private Mode mode;
+
+  /** Level */
+  private Level level;
+
+  public Mode getMode() {
+    return this.mode;
+  }
+
+  public void setMode(Mode mode) {
+    this.mode = mode;
+  }
+
+  public Level getLevel() {
+    return this.level;
+  }
+
+  public void setLevel(Level niveau) {
+    this.level = niveau;
+  }
 
   public String getIdEquipe() {
     return this.idEquipe;
@@ -30,11 +52,11 @@ public class EngineVars {
     this.idPartie = idPartie;
   }
 
-  public String getStatus() {
+  public Status getStatus() {
     return this.status;
   }
 
-  public void setStatus(String status) {
+  public void setStatus(Status status) {
     this.status = status;
   }
 
