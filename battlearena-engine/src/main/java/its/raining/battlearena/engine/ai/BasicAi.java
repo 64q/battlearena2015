@@ -1,4 +1,4 @@
-package its.raining.battlearena.ai;
+package its.raining.battlearena.engine.ai;
 
 import org.springframework.stereotype.Component;
 

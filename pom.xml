@@ -163,7 +163,7 @@
           <configuration>
             <autoPackaging>true</autoPackaging>
             <generationStyle>jaxrs20</generationStyle>
-            <includes>application.wadl</includes>
+            <includes>application-test.wadl</includes>
             <targetDirectory>${project.build.directory}/generated-sources</targetDirectory>
             <packageName>its.raining.battlearena.generated</packageName>
           </configuration>

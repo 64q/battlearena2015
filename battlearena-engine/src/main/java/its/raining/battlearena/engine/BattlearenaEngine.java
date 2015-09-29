@@ -8,7 +8,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
 
-import its.raining.battlearena.ai.Ai;
+import its.raining.battlearena.engine.ai.Ai;
 import its.raining.battlearena.engine.client.BattlearenaClient;
 import its.raining.battlearena.engine.exception.EngineException;
 import its.raining.battlearena.engine.model.Board;
