@@ -17,6 +17,9 @@ public class BasicAi implements Ai {
   private Move ourLastMove = Move.NA;
 
   private Move themLastMove = Move.NA;
+  
+  private double theirCover = 0;
+  private double ourAim = 0;
 
   /**
    * Logger
@@ -43,13 +46,18 @@ public class BasicAi implements Ai {
     } else if (doitTirer(board, move, us, them)) {
       ourMove = Move.SHOOT;
     } else {
-      ourMove = Move.SHOOT;
-
+      if(board.getNbrActionLeft() == 1 || Math.random() * 100 > 70 || ourLastMove == Move.AIM ||  us.getBullet() > 2){
+        ourMove = Move.SHOOT;
+      }else{
+        ourMove = Move.RELOAD;
+      }
     }
 
     LOG.info("Our move = " + ourMove);
     LOG.info("Their move = " + move);
-
+    if(move.equals(Move.COVER)){
+      theirCover++;
+    }
     ourLastMove = ourMove;
     themLastMove = move;
 
@@ -97,8 +105,12 @@ public class BasicAi implements Ai {
   }
 
   public boolean doitViser(Board board, Move move, Player us, Player them) {
-    if ((them.getHealth() > 3 && us.getBullet() > 0 && (Math.random() * 100 > 40)) && (ourLastMove != Move.AIM || them.getShield() > 0) 
-        || them.getBullet() == 0 && ourLastMove != Move.AIM) {
+    if (
+        ((them.getHealth() > 3 && us.getHealth() > 1 && us.getBullet() > 0 && (  Math.random() * 100 > (theirCover+1)/(ourAim+1) * 90)) && (ourLastMove != Move.AIM || them.getShield() > 0) 
+            || them.getBullet() == 0 && ourLastMove != Move.AIM && them.getHealth() > 3)
+        && board.getNbrActionLeft() > 1
+        ) {
+      ourAim++;
       return true;
     }
     return false;
