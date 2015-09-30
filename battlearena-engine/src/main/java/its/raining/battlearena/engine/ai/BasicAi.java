@@ -1,9 +1,9 @@
 package its.raining.battlearena.engine.ai;
 
-import org.springframework.stereotype.Component;
-
 import its.raining.battlearena.engine.model.Board;
-import its.raining.battlearena.engine.model.Coordinates;
+import its.raining.battlearena.engine.model.Move;
+
+import org.springframework.stereotype.Component;
 
 /**
  * IA de base
@@ -11,9 +11,35 @@ import its.raining.battlearena.engine.model.Coordinates;
 @Component
 public class BasicAi implements Ai {
 
+  private Move lastMove = Move.NA;
+
   @Override
-  public Coordinates play(Board board, String currentPlayer) {
-    return new Coordinates("A2", "C6");
+  public Move play(Board board, Move move) {
+    Move ourMove = Move.SHOOT;
+
+    lastMove = ourMove;
+
+    return ourMove;
   }
 
+  public boolean doitSeCouvrir(Board board, Move move) {
+    if (move == Move.AIM && board.getPlayer2().getBullet() > 0
+        && board.getPlayer1().getShield() > 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  public boolean doitTirer(Board board, Move move) {
+
+  }
+
+  public boolean doitRecharger(Board board, Move move) {
+
+  }
+
+  public boolean doitViser(Board board, Move move) {
+
+  }
 }

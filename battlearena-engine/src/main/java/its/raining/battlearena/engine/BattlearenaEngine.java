@@ -1,5 +1,16 @@
 package its.raining.battlearena.engine;
 
+import its.raining.battlearena.engine.ai.Ai;
+import its.raining.battlearena.engine.client.BattlearenaClient;
+import its.raining.battlearena.engine.exception.EngineException;
+import its.raining.battlearena.engine.model.Board;
+import its.raining.battlearena.engine.model.EngineVars;
+import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.engine.model.Mode;
+import its.raining.battlearena.engine.model.Move;
+import its.raining.battlearena.engine.model.PlayOutcome;
+import its.raining.battlearena.engine.model.Status;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -7,17 +18,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
-
-import its.raining.battlearena.engine.ai.Ai;
-import its.raining.battlearena.engine.client.BattlearenaClient;
-import its.raining.battlearena.engine.exception.EngineException;
-import its.raining.battlearena.engine.model.Board;
-import its.raining.battlearena.engine.model.Coordinates;
-import its.raining.battlearena.engine.model.EngineVars;
-import its.raining.battlearena.engine.model.Status;
-import its.raining.battlearena.engine.model.Level;
-import its.raining.battlearena.engine.model.Mode;
-import its.raining.battlearena.engine.model.PlayOutcome;
 
 /**
  * Moteur de jeu de la Battlearena
@@ -178,16 +178,17 @@ public class BattlearenaEngine {
       case CANCELLED:
         performCancelled();
         break;
-      case CAN_PLAY:
+      case CANPLAY:
         LOG.debug("C'est notre tour");
         stepGetBoard();
-      case CANT_PLAY:
+        break;
+      case CANTPLAY:
       default:
         LOG.debug("Ce n'est pas notre tour");
         stepGetStatus();
     }
 
-    LOG.info("Fin de la partie " + idPartie + " sur l'état = " + status);
+    // LOG.info("Fin de la partie " + idPartie + " sur l'état = " + status);
   }
 
   /**
@@ -226,13 +227,12 @@ public class BattlearenaEngine {
     LOG.info("Tour de jeu");
 
     // récupérer le plateau
-    Board plateau = client.getBoard(idEquipe);
+    Board plateau = client.getBoard(idPartie);
 
     if (LOG.isDebugEnabled()) {
-      LOG.debug("Etat joueur1 " + plateau.getPlayer1().getNom() + " = { nbrDePieces = "
-          + plateau.getPlayer1().getNbrDePieces() + " } ");
-      LOG.debug("Etat joueur2 " + plateau.getPlayer2().getNom() + " = { nbrDePieces = "
-          + plateau.getPlayer2().getNbrDePieces() + " } ");
+      LOG.debug("Tour de jeu = " + plateau.getNbrActionLeft());
+      LOG.debug("Etat joueur1 " + plateau.getPlayer1());
+      LOG.debug("Etat joueur2 " + plateau.getPlayer2());
     }
 
     stepPlay(plateau);
@@ -245,15 +245,20 @@ public class BattlearenaEngine {
    */
   protected void stepPlay(Board plateau) {
 
+    // récupère le dernier coup de l'adversaire
+    Move lastMove = client.getLastMove(idPartie, idEquipe);
+
     // calcul du prochain coup
-    Coordinates coords = ai.play(plateau, idEquipe);
+    Move currentMove = ai.play(plateau, lastMove);
 
     // joue le coup
-    PlayOutcome result = client.play(idEquipe, idPartie, coords);
+    PlayOutcome result = client.play(idEquipe, idPartie, currentMove);
 
     switch (result) {
-      case KO:
+      case GAMEOVER:
+      case FORBIDDEN:
         performDefeat();
+        break;
       case OK:
       case NOT_YET:
       default:

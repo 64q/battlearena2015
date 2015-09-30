@@ -2,33 +2,61 @@ package its.raining.battlearena.engine.model;
 
 public class Player {
 
-  private String nom;
+  private String name;
 
-  private int nbrDePieces;
+  private int health;
 
-  private String dernierMouvement;
+  private int bullet;
 
-  public String getNom() {
-    return this.nom;
+  private int shield;
+
+  private boolean focused;
+
+  public String getName() {
+    return name;
   }
 
-  public void setNom(String nom) {
-    this.nom = nom;
+  public void setName(String nom) {
+    this.name = nom;
   }
 
-  public int getNbrDePieces() {
-    return this.nbrDePieces;
+  public int getHealth() {
+    return health;
   }
 
-  public void setNbrDePieces(int nbrDePieces) {
-    this.nbrDePieces = nbrDePieces;
+  public void setHealth(int health) {
+    this.health = health;
   }
 
-  public String getDernierMouvement() {
-    return this.dernierMouvement;
+  public int getBullet() {
+    return bullet;
   }
 
-  public void setDernierMouvement(String dernierMouvement) {
-    this.dernierMouvement = dernierMouvement;
+  public void setBullet(int bullet) {
+    this.bullet = bullet;
   }
+
+  public int getShield() {
+    return shield;
+  }
+
+  public void setShield(int shield) {
+    this.shield = shield;
+  }
+
+  public boolean isFocused() {
+    return focused;
+  }
+
+  public void setFocused(boolean focused) {
+    this.focused = focused;
+  }
+
+  @Override
+  public String toString() {
+    return "Player [name=" + name + ", health=" + health + ", bullet=" + bullet + ", shield="
+        + shield + ", focused=" + focused + "]";
+  }
+
+
 }

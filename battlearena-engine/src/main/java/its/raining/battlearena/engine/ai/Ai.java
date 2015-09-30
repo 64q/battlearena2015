@@ -1,9 +1,9 @@
 package its.raining.battlearena.engine.ai;
 
-import org.springframework.stereotype.Service;
-
 import its.raining.battlearena.engine.model.Board;
-import its.raining.battlearena.engine.model.Coordinates;
+import its.raining.battlearena.engine.model.Move;
+
+import org.springframework.stereotype.Service;
 
 /**
  * Interface permettant d'implémenter une IA
@@ -14,8 +14,8 @@ public interface Ai {
    * Jouer un coup avec l'IA
    * 
    * @param board plateau de jeu
-   * @param idEquipe id de notre équipe
-   * @return coordonnées du coup à jouer
+   * @param move mouvement de l'adversaire
+   * @return le mouvement
    */
-  Coordinates play(Board board, String idEquipe);
+  Move play(Board board, Move move);
 }

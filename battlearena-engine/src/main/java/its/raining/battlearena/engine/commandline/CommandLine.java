@@ -1,13 +1,13 @@
 package its.raining.battlearena.engine.commandline;
 
+import its.raining.battlearena.engine.BattlearenaEngine;
+import its.raining.battlearena.engine.model.Level;
+import its.raining.battlearena.engine.model.Mode;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-
-import its.raining.battlearena.engine.BattlearenaEngine;
-import its.raining.battlearena.engine.model.Mode;
-import its.raining.battlearena.engine.model.Level;
 
 /**
  * Point d'entrée en ligne de commande du moteur de jeu
@@ -17,16 +17,16 @@ public class CommandLine {
   // Constantes à configurer
 
   /** Nom d'équipe */
-  public static final String NOM_EQUIPE = "test";
+  public static final String NOM_EQUIPE = "It's Raining";
 
   /** Mot de passe */
-  public static final String MOT_DE_PASSE = "test";
+  public static final String MOT_DE_PASSE = "IRhdjks187";
 
   /** Mode de jeu */
   public static final Mode MODE = Mode.PRACTICE;
 
   /** Level IA */
-  public static final Level LEVEL = Level.MEDIUM;
+  public static final Level LEVEL = Level.TWO;
 
   // -----------------------
 
@@ -34,8 +34,8 @@ public class CommandLine {
   private static final Logger LOG = LoggerFactory.getLogger(CommandLine.class);
 
   /** Contexte spring */
-  private static AbstractApplicationContext context =
-      new ClassPathXmlApplicationContext("spring-context.xml");
+  private static AbstractApplicationContext context = new ClassPathXmlApplicationContext(
+      "spring-context.xml");
 
   /**
    * Point d'entrée principal en ligne de commande
@@ -53,7 +53,8 @@ public class CommandLine {
     LOG.info("======================================");
 
     if (MODE == Mode.PRACTICE) {
-      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).runFlowPractice(LEVEL);
+      context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE)
+          .runFlowPractice(LEVEL);
     } else {
       context.getBean(BattlearenaEngine.class).init(NOM_EQUIPE, MOT_DE_PASSE).runFlowVersus();
     }

@@ -5,20 +5,22 @@ package its.raining.battlearena.engine.model;
  */
 public class Board {
 
-  /** Player 1 */
+  private int nbrActionLeft;
+
   private Player player1;
 
-  /** Player 2 */
   private Player player2;
 
-  /** Longueur plateau */
-  private int longueur;
+  public int getNbrActionLeft() {
+    return nbrActionLeft;
+  }
 
-  /** Largeur plateau */
-  private int largeur;
+  public void setNbrActionLeft(int nbrActionLeft) {
+    this.nbrActionLeft = nbrActionLeft;
+  }
 
   public Player getPlayer1() {
-    return this.player1;
+    return player1;
   }
 
   public void setPlayer1(Player player1) {
@@ -26,27 +28,12 @@ public class Board {
   }
 
   public Player getPlayer2() {
-    return this.player2;
+    return player2;
   }
 
   public void setPlayer2(Player player2) {
     this.player2 = player2;
   }
 
-  public int getLongueur() {
-    return this.longueur;
-  }
-
-  public void setLongueur(int longueur) {
-    this.longueur = longueur;
-  }
-
-  public int getLargeur() {
-    return this.largeur;
-  }
-
-  public void setLargeur(int largeur) {
-    this.largeur = largeur;
-  }
 
 }

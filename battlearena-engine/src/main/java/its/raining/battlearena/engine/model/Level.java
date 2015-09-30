@@ -1,7 +1,7 @@
 package its.raining.battlearena.engine.model;
 
 public enum Level {
-  EASY("easy"), MEDIUM("medium"), HARD("hard");
+  ONE("1"), TWO("2"), THREE("3"), FOUR("4"), FIVE("5"), SIX("6");
 
   private String code;
 
