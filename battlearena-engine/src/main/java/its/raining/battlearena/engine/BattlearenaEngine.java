@@ -179,6 +179,7 @@ public class BattlearenaEngine {
         performCancelled();
         break;
       case CANPLAY:
+        LOG.debug("------------------------------------------");
         LOG.debug("C'est notre tour");
         stepGetBoard();
         break;

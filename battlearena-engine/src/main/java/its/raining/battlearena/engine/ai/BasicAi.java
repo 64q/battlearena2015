@@ -2,7 +2,10 @@ package its.raining.battlearena.engine.ai;
 
 import its.raining.battlearena.engine.model.Board;
 import its.raining.battlearena.engine.model.Move;
+import its.raining.battlearena.engine.model.Player;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 /**
@@ -13,33 +16,88 @@ public class BasicAi implements Ai {
 
   private Move lastMove = Move.NA;
 
+  private Move themLastMove = Move.NA;
+
+  /**
+   * Logger
+   */
+  private static final Logger LOG = LoggerFactory.getLogger(BasicAi.class);
+
   @Override
   public Move play(Board board, Move move) {
-    Move ourMove = Move.SHOOT;
+
+    Player us = getUs(board);
+    Player them = getThem(board);
+
+    Move ourMove;
+
+    if (doitSeCouvrir(board, move, us, them)) {
+      ourMove = Move.COVER;
+    } else if (doitRecharger(board, move, us, them)) {
+      ourMove = Move.RELOAD;
+    } else if (doitViser(board, move, us, them)) {
+      ourMove = Move.AIM;
+    } else if (doitTirer(board, move, us, them)) {
+      ourMove = Move.SHOOT;
+    } else {
+      ourMove = Move.SHOOT;
+    }
+
+    LOG.info("Our move = " + ourMove);
+    LOG.info("Their move = " + move);
 
     lastMove = ourMove;
+    themLastMove = move;
 
     return ourMove;
   }
 
-  public boolean doitSeCouvrir(Board board, Move move) {
-    if (move == Move.AIM && board.getPlayer2().getBullet() > 0
-        && board.getPlayer1().getShield() > 0) {
+  private Player getThem(Board board) {
+    if (board.getPlayer1().getName().equals("It's Raining")) {
+      return board.getPlayer2();
+    }
+
+    return board.getPlayer1();
+  }
+
+  private Player getUs(Board board) {
+    if (board.getPlayer1().getName().equals("It's Raining")) {
+      return board.getPlayer1();
+    }
+
+    return board.getPlayer2();
+  }
+
+  public boolean doitSeCouvrir(Board board, Move move, Player us, Player them) {
+    if (move == Move.AIM && them.getBullet() > 0 && us.getShield() > 0 && us.getHealth() > 3
+        && themLastMove != Move.AIM) {
       return true;
     }
 
     return false;
   }
 
-  public boolean doitTirer(Board board, Move move) {
+  public boolean doitTirer(Board board, Move move, Player us, Player them) {
+    if (them.getHealth() == 1 && us.getBullet() > 0 && lastMove == Move.AIM) {
+      return true;
+    }
 
+    return false;
   }
 
-  public boolean doitRecharger(Board board, Move move) {
-
+  public boolean doitRecharger(Board board, Move move, Player us, Player them) {
+    if (us.getBullet() == 0) {
+      return true;
+    }
+    return false;
   }
 
-  public boolean doitViser(Board board, Move move) {
+  public boolean doitViser(Board board, Move move, Player us, Player them) {
+    if ((them.getHealth() > 3 && us.getBullet() > 0 && Math.random() * 100 % 2 > 1)
+        || them.getBullet() == 0 && lastMove != Move.AIM) {
+      return true;
+    }
 
+    return false;
   }
 }

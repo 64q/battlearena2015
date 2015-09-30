@@ -26,7 +26,7 @@ public class CommandLine {
   public static final Mode MODE = Mode.PRACTICE;
 
   /** Level IA */
-  public static final Level LEVEL = Level.TWO;
+  public static final Level LEVEL = Level.FIVE;
 
   // -----------------------
 
