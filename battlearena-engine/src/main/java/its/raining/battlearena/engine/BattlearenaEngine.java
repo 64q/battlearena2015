@@ -167,7 +167,13 @@ public class BattlearenaEngine {
    */
   protected void stepGetStatus() {
     Status status = client.getStatus(idEquipe, idPartie);
-
+    
+    try {
+      Thread.sleep(100);
+    } catch (InterruptedException e) {
+      LOG.warn("Aie", e);
+    }
+    
     switch (status) {
       case VICTORY:
         performVictory();

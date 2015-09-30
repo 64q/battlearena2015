@@ -23,10 +23,10 @@ public class CommandLine {
   public static final String MOT_DE_PASSE = "IRhdjks187";
 
   /** Mode de jeu */
-  public static final Mode MODE = Mode.PRACTICE;
+  public static final Mode MODE = Mode.VERSUS;
 
   /** Level IA */
-  public static final Level LEVEL = Level.FIVE;
+  public static final Level LEVEL = Level.SIX;
 
   // -----------------------
 

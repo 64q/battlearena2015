@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class BasicAi implements Ai {
 
-  private Move lastMove = Move.NA;
+  private Move ourLastMove = Move.NA;
 
   private Move themLastMove = Move.NA;
 
@@ -31,7 +31,10 @@ public class BasicAi implements Ai {
 
     Move ourMove;
 
-    if (doitSeCouvrir(board, move, us, them)) {
+    if (board.getNbrActionLeft() == us.getShield() && us.getHealth() > them.getHealth()
+        && them.getBullet() > 0) {
+      ourMove = Move.COVER;
+    } else if (doitSeCouvrir(board, move, us, them)) {
       ourMove = Move.COVER;
     } else if (doitRecharger(board, move, us, them)) {
       ourMove = Move.RELOAD;
@@ -41,12 +44,13 @@ public class BasicAi implements Ai {
       ourMove = Move.SHOOT;
     } else {
       ourMove = Move.SHOOT;
+
     }
 
     LOG.info("Our move = " + ourMove);
     LOG.info("Their move = " + move);
 
-    lastMove = ourMove;
+    ourLastMove = ourMove;
     themLastMove = move;
 
     return ourMove;
@@ -78,7 +82,7 @@ public class BasicAi implements Ai {
   }
 
   public boolean doitTirer(Board board, Move move, Player us, Player them) {
-    if (them.getHealth() == 1 && us.getBullet() > 0 && lastMove == Move.AIM) {
+    if (them.getHealth() == 1 && us.getBullet() > 0 && ourLastMove == Move.AIM) {
       return true;
     }
 
@@ -93,11 +97,10 @@ public class BasicAi implements Ai {
   }
 
   public boolean doitViser(Board board, Move move, Player us, Player them) {
-    if ((them.getHealth() > 3 && us.getBullet() > 0 && Math.random() * 100 % 2 > 1)
-        || them.getBullet() == 0 && lastMove != Move.AIM) {
+    if ((them.getHealth() > 3 && us.getBullet() > 0 && (Math.random() * 100 > 40)) && (ourLastMove != Move.AIM || them.getShield() > 0) 
+        || them.getBullet() == 0 && ourLastMove != Move.AIM) {
       return true;
     }
-
     return false;
   }
 }
